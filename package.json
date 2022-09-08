@@ -1,10 +1,14 @@
 {
-  "name": "webrtcvideobroadcast",
+  "name": "animates-sockets",
   "version": "1.0.0",
   "description": "WebRTC example for a video broadcast",
-  "main": "server.js",
+  "main": "index.js",
+  "engines": {
+    "npm": "=8.17.0",
+    "node": "=16.17.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "keywords": [
     "WebRTC",
@@ -13,10 +17,17 @@
   "author": "Tanner Gabriel",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
     "socket.io": "^4.0.1"
   },
   "devDependencies": {
-    "eslint": "8.0.1"
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.0",
+    "@babel/preset-env": "^7.19.0",
+    "@types/express": "^4.17.13",
+    "concurrently": "^7.4.0",
+    "eslint": "8.0.1",
+    "nodemon": "^2.0.19"
   }
 }

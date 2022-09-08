@@ -12,7 +12,6 @@ const config = {
   ]
 };
 
-const socket = io.connect(window.location.origin);
 const video = document.querySelector("video");
 const enableAudioButton = document.querySelector("#enable-audio");
 
@@ -47,11 +46,13 @@ socket.on("candidate", (id, candidate) => {
 });
 
 socket.on("connect", () => {
-  socket.emit("watcher");
+  socket.emit("joinRoom", room)
+  socket.emit("watcher", broadcaster);
 });
 
-socket.on("broadcaster", () => {
-  socket.emit("watcher");
+socket.on("broadcaster", (broadcaster) => {
+  console.log(broadcaster)
+  socket.emit("watcher", broadcaster);
 });
 
 window.addEventListener("orientationchange", (event) => {

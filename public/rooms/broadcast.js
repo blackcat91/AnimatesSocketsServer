@@ -12,7 +12,7 @@ const config = {
   ]
 };
 
-const socket = io.connect(window.location.origin);
+
 let video  = document.querySelector('video');
 
 socket.on("answer", (id, description) => {
@@ -68,25 +68,7 @@ let urls =['https://storage.googleapis.com/evbp-adixy-1651468419.appspot.com/ED1
 'https://storage.googleapis.com/wksf-lbeon-1651382321.appspot.com/NC74LS2AOTM/st25_6_hataraki-man-episode-1-HD.mp4'];
 let urlIndex = 0;
 
-if(window.innerWidth < 990){
-  
-  var space = window.innerHeight - (vidContainer.offsetTop + vidContainer.offsetHeight);
-  console.log(space)
-  document.getElementById("playlist-search").style.height = `${space}px`;
-  
-}
-window.onresize = (e) => {
-  if(window.innerWidth < 990){
-  
-    var space = window.innerHeight - (vidContainer.offsetTop + vidContainer.offsetHeight);
-    console.log(space)
-    document.getElementById("playlist-search").style.height = `${space}px`;
-    
-  }
-  else{
-    document.getElementById("playlist-search").style.height = `auto`;
-  }
-}
+
 
 var mediaSource = null;
 
@@ -102,12 +84,12 @@ function maybeCreateStream() {
   }
   if (video.captureStream) {
     stream = video.captureStream()
-    socket.emit("broadcaster");
+    socket.emit("broadcaster", room);
     
     
   } else if (video.mozCaptureStream) {
     stream = video.mozCaptureStream();
-    socket.emit("broadcaster");
+    socket.emit("broadcaster", room);
     
   } else {
     console.log('captureStream() not supported');
@@ -130,7 +112,7 @@ video.addEventListener('error', (e) => {
       urlIndex += 1
       gotStream(urls[urlIndex]);
       video.play()
-      socket.emit("broadcaster");
+      socket.emit("broadcaster", room);
       
     }
   
@@ -142,6 +124,7 @@ video.addEventListener('error', (e) => {
   else if(video.readyState == 0){
     console.log('Downloading File')
     downloadVideo(urls[urlIndex]).then(() => {
+      socket.emit("broadcaster", room);
       video.play()
       console.log("Download Complete")
     })
@@ -199,7 +182,7 @@ function gotStream(url) {
    //video.src = '/play/deeznuts.mp4' 
    video.load()
    console.log(video.readyState)
-   socket.emit("broadcaster");
+   socket.emit("broadcaster", room);
     /*
    fetch('/convert', {method: "POST",headers:{"Content-Type": "application/json"}, body: JSON.stringify({'url': url })})
    .then( resp =>  resp.json())
@@ -247,7 +230,7 @@ function loadSource(hls, url){
       hls.on(Hls.Events.LEVEL_LOADED, function(e,frag) {
         if(video.src !== null){
           
-          socket.emit("broadcaster");
+          socket.emit("broadcaster", room);
           video.play()
           console.log("Broadcasting...")
           
