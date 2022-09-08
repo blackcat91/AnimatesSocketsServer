@@ -64,8 +64,8 @@ rooms.on("connection",socket => {
   socket.on("candidate", (id, message) => {
     socket.to(id).emit("candidate", socket.id, message);
   });
-  socket.on("disconnect", (broadcaster) => {
-    socket.to(broadcaster).emit("disconnectPeer", socket.id);
+  socket.on("disconnectRoom", (room) => {
+    socket.to(room).emit("disconnectPeer", socket.id);
   });
   socket.on("sendMessage", (room, message) =>{
     console.log(message)
