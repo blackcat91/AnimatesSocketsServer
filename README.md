@@ -1,4 +1,4 @@
-# WebRTC Video/Audio Broadcast
+# AnimatesSocketServer
 
 WebRTC PeerToPeer broadcast application that allows the broadcaster to send a video and audio stream to all connected users (watchers).
 
