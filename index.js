@@ -12,6 +12,9 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+app.use("/",function(req, res) {
+  res.send("Everything Checks Out!")
+});
 app.use(express.static(__dirname + "/public"));
 let broadcaster;
 const port = process.env.PORT ?? 8080;
@@ -29,7 +32,10 @@ const io = require("socket.io")(server, {cors: {
 const rooms = io.of("/rooms");
 rooms.on("error", e => console.log(e));
 rooms.on("connection",socket => {
-  
+  socket.send(JSON.stringify({
+    type: "hello from server",
+    content: [ 1, "2" ]
+  }));
   socket.on("createRoom", (room) => {
     console.log("Creating Room!", room)
     socket.join(room);
@@ -46,14 +52,17 @@ rooms.on("connection",socket => {
     socket.leave(room);
   });
   socket.on("broadcaster", (room, broadcast) => {
-  
-    
+
     socket.to(room).emit("broadcaster", broadcast); 
   });
   
   socket.on("watcher", (broadcaster) => {
     console.log("Watching:", broadcaster)
     socket.to(broadcaster).emit("watcher", socket.id);
+  });
+  socket.on("watcherRoom", (room) => {
+    console.log("Watching:", room)
+    socket.to(room).emit("watcher", socket.id);
   });
   socket.on("offer", (id, message) => {
     socket.to(id).emit("offer", socket.id, message);
@@ -64,8 +73,19 @@ rooms.on("connection",socket => {
   socket.on("candidate", (id, message) => {
     socket.to(id).emit("candidate", socket.id, message);
   });
-  socket.on("disconnectRoom", (room) => {
-    socket.to(room).emit("disconnectPeer", socket.id);
+  socket.on("disconnect", (broadcaster) => {
+    console.log("Disconnected")
+    
+  });
+  socket.on("disconnectPeer", (broadcaster) => {
+    console.log("Disconnected", socket.id);
+    socket.to(broadcaster).emit("disconnectPeer", socket.id);
+    
+  });
+  socket.conn.on("disconnectAll", (room) => {
+    console.log("Disconnected Room:", room);
+    rooms.in(room).socketsLeave();
+    
   });
   socket.on("sendMessage", (room, message) =>{
     console.log(message)
@@ -77,7 +97,10 @@ rooms.on("connection",socket => {
 const convos = io.of("/convos");
 convos.on("error", e => console.log(e));
 convos.on("connection",socket => {
-  
+  socket.send(JSON.stringify({
+    type: "hello from server",
+    content: [ 1, "2" ]
+  }));
   socket.on("createConvo", (convo) => {
     console.log("Creating Convo!", convo)
     socket.join(convo);
