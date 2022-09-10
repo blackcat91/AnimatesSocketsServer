@@ -75,13 +75,9 @@ rooms.on("connection",socket => {
   });
   socket.on("disconnect", (broadcaster) => {
     console.log("Disconnected")
-    
-  });
-  socket.on("disconnectPeer", (broadcaster) => {
-    console.log("Disconnected", socket.id);
     socket.to(broadcaster).emit("disconnectPeer", socket.id);
-    
   });
+  
   socket.conn.on("disconnectAll", (room) => {
     console.log("Disconnected Room:", room);
     rooms.in(room).socketsLeave();
