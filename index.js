@@ -55,6 +55,24 @@ rooms.on("connection",socket => {
 
     socket.to(room).emit("broadcaster", broadcast); 
   });
+
+  socket.on("getTime", (broadcaster) => {
+    console.log("Getting Current Time:")
+    socket.to(broadcaster).emit("getTime", socket.id);
+  });
+  socket.on("sendTime", (watcher, time) => {
+    console.log("Sending Current Time:", time)
+    socket.to(watcher).emit("sendTime", time);
+  });
+
+  socket.on("videoEnded", (room) => {
+    console.log("Video Ended")
+    socket.to(room).emit("videoEnded");
+  });
+  socket.on("streamEnded", (room) => {
+    console.log("Stream Ended")
+    socket.to(room).emit("streamEnded");
+  });
   
   socket.on("watcher", (broadcaster) => {
     console.log("Watching:", broadcaster)
