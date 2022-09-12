@@ -111,8 +111,8 @@ convos.on("connection",socket => {
   socket.on("leaveConvo", (convo) => {
     socket.leave(convo);
   });
-  socket.on("disconnect", (broadcaster) => {
-    socket.to(broadcaster).emit("disconnectPeer", socket.id);
+  socket.on("disconnect", () => {
+    socket.broadcast.emit("disconnectPeer", socket.id);
   });
   socket.on("sendMessage", (convo, message) =>{
     console.log(message)
